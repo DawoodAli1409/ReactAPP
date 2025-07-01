@@ -22,7 +22,7 @@ export default function UserTable({ users, onEdit, onDelete }) {
 
   return (
     <Paper elevation={3} sx={{ 
-      p: 3, 
+      p: 1, 
       borderRadius: 3,
       width: '100%'
     }}>
