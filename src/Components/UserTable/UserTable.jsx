@@ -39,23 +39,53 @@ export default function UserTable({ users, onEdit, onDelete }) {
         <Table size="small" sx={{ minWidth: 800 }}>
           <TableHead sx={{ bgcolor: 'primary.main' }}>
             <TableRow>
-              <TableCell sx={{ color: 'white', fontWeight: 600 }}>ID</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 600 }}>Name</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 600 }}>Email</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 600 }}>Gender</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 600 }}>Age</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 600 }}>Actions</TableCell>
+              <TableCell sx={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                padding: '8px 16px', // Reduced padding
+                fontSize: '0.875rem' // Smaller font size
+              }}>ID</TableCell>
+              <TableCell sx={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                padding: '8px 16px',
+                fontSize: '0.875rem'
+              }}>Name</TableCell>
+              <TableCell sx={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                padding: '8px 16px',
+                fontSize: '0.875rem'
+              }}>Email</TableCell>
+              <TableCell sx={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                padding: '8px 16px',
+                fontSize: '0.875rem'
+              }}>Gender</TableCell>
+              <TableCell sx={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                padding: '8px 16px',
+                fontSize: '0.875rem'
+              }}>Age</TableCell>
+              <TableCell sx={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                padding: '8px 16px',
+                fontSize: '0.875rem'
+              }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id} hover>
-                <TableCell>{user.id}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.gender}</TableCell>
-                <TableCell>{user.age}</TableCell>
-                <TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>{user.id}</TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>{user.name}</TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>{user.email}</TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>{user.gender}</TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>{user.age}</TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>
                   <IconButton
                     color="primary"
                     size="small"
