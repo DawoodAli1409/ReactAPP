@@ -1,3 +1,4 @@
+// UserForm.jsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,10 +32,7 @@ const schema = yup.object().shape({
   password: yup.string()
     .required('Password is required')
     .min(8, 'Password must be at least 8 characters')
-    .matches(
-      /[A-Z]/,
-      'Password must contain at least one uppercase letter'
-    ),
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter'),
   gender: yup.string().required('Gender is required'),
   age: yup.number()
     .typeError('Age must be a number')
@@ -45,11 +43,11 @@ const schema = yup.object().shape({
 });
 
 export default function UserForm({ onSubmit, editUser }) {
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors }, 
-    reset 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: editUser || {
@@ -69,23 +67,24 @@ export default function UserForm({ onSubmit, editUser }) {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-      <Avatar sx={{ 
-        bgcolor: 'primary.main', 
+    <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
+      <Avatar sx={{
+        bgcolor: 'primary.main',
         color: 'white',
-        width: 56, 
-        height: 56,
-        mb: 2,
+        width: 44,
+        height: 44,
+        mb: 1.5,
         mx: 'auto'
       }}>
-        <PeopleIcon fontSize="large" />
+        <PeopleIcon fontSize="medium" />
       </Avatar>
-      <FormTitle variant="h5">
+
+      <FormTitle variant="h6">
         {editUser ? 'Edit User Profile' : 'Create New User'}
       </FormTitle>
-      
+
       <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           <Grid item xs={12}>
             <RequiredField>Name</RequiredField>
             <StyledTextField
@@ -145,11 +144,7 @@ export default function UserForm({ onSubmit, editUser }) {
           </Grid>
 
           <Grid item xs={12}>
-            <SubmitButton
-              type="submit"
-              variant="contained"
-              fullWidth
-            >
+            <SubmitButton type="submit" variant="contained" fullWidth>
               {editUser ? 'Update Profile' : 'Create User'}
             </SubmitButton>
           </Grid>
