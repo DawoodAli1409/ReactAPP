@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 export const FormContainer = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(1),
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[2],
@@ -24,19 +24,19 @@ export const FormTitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
+  marginBottom: theme.spacing(1),
   '& .MuiOutlinedInput-root': {
     borderRadius: '8px',
   },
 }));
 
 export const StyledFormControl = styled(FormControl)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
+  marginBottom: theme.spacing(1),
   width: '100%',
 }));
 
 export const SubmitButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(1),
   padding: theme.spacing(1.5),
   fontWeight: 600,
   fontSize: '1rem',
