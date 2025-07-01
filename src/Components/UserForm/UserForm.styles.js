@@ -1,8 +1,6 @@
-// UserForm.styles.js
 import { styled } from '@mui/material/styles';
 import { 
   TextField, 
-  FormControl, 
   Typography, 
   Button,
   FormLabel,
@@ -13,7 +11,6 @@ export const FormContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0.5),
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[1],
 }));
 
 export const FormTitle = styled(Typography)(({ theme }) => ({
@@ -26,7 +23,7 @@ export const FormTitle = styled(Typography)(({ theme }) => ({
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
-    height: 42,  // Slightly larger than small but not too big
+    height: 42,
     fontSize: '0.875rem'
   },
   '& .MuiFormHelperText-root': {
@@ -40,7 +37,11 @@ export const SubmitButton = styled(Button)(({ theme }) => ({
   height: 42,
   fontSize: '0.9rem',
   fontWeight: 600,
-  textTransform: 'uppercase'
+  textTransform: 'uppercase',
+  background: theme.palette.primary.main,
+  '&:hover': {
+    background: theme.palette.primary.dark
+  }
 }));
 
 export const RequiredField = styled(FormLabel)(({ theme }) => ({

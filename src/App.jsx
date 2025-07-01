@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, CssBaseline } from '@mui/material';
+import { Grid } from '@mui/material';
 import Alert from '@/Components/Alert/Alert';
 import UserForm from "@/Components/UserForm/UserForm";
 import UserTable from "@/Components/UserTable/UserTable";
@@ -29,14 +29,13 @@ function App() {
     setAlert({ open: true, severity: 'success', message: 'User deleted successfully!' });
   };
 
- 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={5}>
           <UserForm onSubmit={handleSubmit} editUser={editUser} />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={7}>
           <UserTable 
             users={users} 
             onEdit={setEditUser} 

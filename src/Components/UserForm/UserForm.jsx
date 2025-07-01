@@ -7,31 +7,58 @@ import {
   Radio,
   FormControlLabel,
   Grid,
-  Paper
+  Paper,
+  FormControl,
+  FormHelperText
 } from '@mui/material';
 import {
   FormContainer,
   FormTitle,
   StyledTextField,
-  StyledFormControl,
   SubmitButton,
   RequiredField
 } from './UserForm.styles';
 
 const schema = yup.object().shape({
-  // ... (keep your existing validation schema)
+  name: yup.string().required('Name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  gender: yup.string().required('Gender is required'),
+  age: yup.number().min(1, 'Age must be at least 1').max(120, 'Age must be less than 120').required('Age is required'),
 });
 
 export default function UserForm({ onSubmit, editUser }) {
-  // ... (keep your existing form logic)
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: editUser || {
+      name: '',
+      email: '',
+      password: '',
+      gender: '',
+      age: ''
+    }
+  });
+
+  React.useEffect(() => {
+    if (editUser) {
+      reset(editUser);
+    }
+  }, [editUser, reset]);
+
+  const handleFormSubmit = (data) => {
+    onSubmit(data);
+    if (!editUser) {
+      reset();
+    }
+  };
 
   return (
     <Paper elevation={3} sx={{ 
       p: 2,
       borderRadius: 2,
       width: '100%',
-      maxWidth: 500,
-      margin: '0 auto'
+      maxWidth: 400,
+      margin: '0 0 0 auto'
     }}>
       <FormTitle variant="h6" sx={{ mb: 1.5 }}>
         {editUser ? 'Edit User Profile' : 'Create New User'}
@@ -39,7 +66,6 @@ export default function UserForm({ onSubmit, editUser }) {
 
       <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
         <Grid container spacing={1.5}>
-          {/* Name Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Name</RequiredField>
             <StyledTextField
@@ -51,7 +77,6 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
-          {/* Email Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Email</RequiredField>
             <StyledTextField
@@ -64,7 +89,6 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
-          {/* Password Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Password</RequiredField>
             <StyledTextField
@@ -77,9 +101,8 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
-          {/* Gender Field */}
           <Grid item xs={12}>
-            <StyledFormControl component="fieldset" error={!!errors.gender}>
+            <FormControl component="fieldset" error={!!errors.gender}>
               <RequiredField component="legend" sx={{ mb: 0.5 }}>Gender</RequiredField>
               <RadioGroup row {...register('gender')}>
                 <FormControlLabel 
@@ -94,10 +117,12 @@ export default function UserForm({ onSubmit, editUser }) {
                   label="Female" 
                 />
               </RadioGroup>
-            </StyledFormControl>
+              {errors.gender && (
+                <FormHelperText>{errors.gender.message}</FormHelperText>
+              )}
+            </FormControl>
           </Grid>
 
-          {/* Age Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Age</RequiredField>
             <StyledTextField
@@ -111,7 +136,6 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
-          {/* Submit Button */}
           <Grid item xs={12} sx={{ mt: 1 }}>
             <SubmitButton 
               type="submit" 

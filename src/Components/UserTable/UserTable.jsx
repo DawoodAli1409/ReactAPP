@@ -9,7 +9,6 @@ import {
   Paper,
   IconButton,
   Typography,
-  Avatar
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
@@ -22,7 +21,11 @@ export default function UserTable({ users, onEdit, onDelete }) {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+    <Paper elevation={3} sx={{ 
+      p: 3, 
+      borderRadius: 3,
+      width: '100%'
+    }}>
       <Typography variant="h5" gutterBottom sx={{ 
         fontWeight: 600,
         display: 'flex',
@@ -32,8 +35,8 @@ export default function UserTable({ users, onEdit, onDelete }) {
       }}>
         <PeopleIcon color="primary" /> User Directory
       </Typography>
-      <TableContainer>
-        <Table size="small">
+      <TableContainer sx={{ width: '100%', overflowX: 'auto' }}>
+        <Table size="small" sx={{ minWidth: 800 }}>
           <TableHead sx={{ bgcolor: 'primary.main' }}>
             <TableRow>
               <TableCell sx={{ color: 'white', fontWeight: 600 }}>ID</TableCell>
