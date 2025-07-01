@@ -64,7 +64,7 @@ export default function UserForm({ onSubmit, editUser }) {
 
   return (
     <Paper 
-      elevation={1} 
+      elevation={2} 
       sx={{ 
         p: 1,             // Reduced padding
         borderRadius: 2, 
@@ -90,7 +90,7 @@ export default function UserForm({ onSubmit, editUser }) {
       </FormTitle>
 
       <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
-        <Grid container spacing={1}>
+        <Grid container spacing={0.5}>
           <Grid item xs={12}>
             <RequiredField>Name</RequiredField>
             <StyledTextField
