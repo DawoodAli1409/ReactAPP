@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import Alert from '@/Components/Alert/Alert';
-import UserForm from "@/Components/UserForm/UserForm";
-import UserTable from "@/Components/UserTable/UserTable";
+import Alert from './Components/Alert/Alert.jsx';
+import UserForm from "./Components/UserForm/UserForm.jsx";
+import UserTable from "./Components/UserTable/UserTable.jsx";
 
 function App() {
   const [users, setUsers] = useState([]);
