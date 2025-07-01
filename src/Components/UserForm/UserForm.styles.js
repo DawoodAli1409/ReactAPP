@@ -25,39 +25,27 @@ export const FormTitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
-  marginBottom: theme.spacing(0.5),
   '& .MuiOutlinedInput-root': {
-    borderRadius: '6px',
-    height: 36,
+    height: 42,  // Slightly larger than small but not too big
+    fontSize: '0.875rem'
   },
-}));
-
-export const StyledFormControl = styled(FormControl)(({ theme }) => ({
-  marginBottom: theme.spacing(0.5),
-  width: '100%',
-}));
-
-export const SubmitButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(1),
-  padding: theme.spacing(1.2),
-  fontWeight: 600,
-  fontSize: '0.95rem',
-  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 12px rgba(63, 81, 181, 0.3)'
+  '& .MuiFormHelperText-root': {
+    fontSize: '0.75rem',
+    marginTop: 4,
+    lineHeight: 1.2
   }
 }));
 
+export const SubmitButton = styled(Button)(({ theme }) => ({
+  height: 42,
+  fontSize: '0.9rem',
+  fontWeight: 600,
+  textTransform: 'uppercase'
+}));
+
 export const RequiredField = styled(FormLabel)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  fontSize: '0.8rem',
-  marginBottom: theme.spacing(0.5),
-  display: 'block',
+  fontSize: '0.85rem',
   fontWeight: 500,
-  '&:after': {
-    content: '"*"',
-    color: theme.palette.error.main,
-    marginLeft: theme.spacing(0.5),
-  },
+  color: theme.palette.text.primary,
+  display: 'block'
 }));

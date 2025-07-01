@@ -29,15 +29,10 @@ function App() {
     setAlert({ open: true, severity: 'success', message: 'User deleted successfully!' });
   };
 
+ 
   return (
-    <>
-      <CssBaseline />
-      <Grid container spacing={3} sx={{ 
-        p: 3, 
-        maxWidth: 1400, 
-        margin: '0 auto',
-        minHeight: '100vh'
-      }}>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <UserForm onSubmit={handleSubmit} editUser={editUser} />
         </Grid>
@@ -55,7 +50,7 @@ function App() {
         message={alert.message}
         onClose={() => setAlert({...alert, open: false})}
       />
-    </>
+    </div>
   );
 }
 

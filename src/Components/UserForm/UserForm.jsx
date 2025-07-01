@@ -19,79 +19,44 @@ import {
 } from './UserForm.styles';
 
 const schema = yup.object().shape({
-  name: yup.string().required('Name is required'),
-  email: yup.string()
-    .required('Email is required')
-    .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 'Invalid email address'),
-  password: yup.string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter'),
-  gender: yup.string().required('Gender is required'),
-  age: yup.number()
-    .typeError('Age must be a number')
-    .positive('Age must be positive')
-    .integer('Age must be an integer')
-    .required('Age is required')
-    .max(120, 'Age must be less than 120')
+  // ... (keep your existing validation schema)
 });
 
 export default function UserForm({ onSubmit, editUser }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: editUser || {
-      name: '',
-      email: '',
-      password: '',
-      gender: '',
-      age: ''
-    }
-  });
-
-  const handleFormSubmit = (data) => {
-    onSubmit(data);
-    if (!editUser) {
-      reset();
-    }
-  };
+  // ... (keep your existing form logic)
 
   return (
-    <Paper elevation={2} sx={{ 
-      p: 1.5,
+    <Paper elevation={3} sx={{ 
+      p: 2,
       borderRadius: 2,
       width: '100%',
-      maxWidth: 400,
+      maxWidth: 500,
       margin: '0 auto'
     }}>
-      <FormTitle variant="subtitle1" sx={{ mb: 1.5 }}>
+      <FormTitle variant="h6" sx={{ mb: 1.5 }}>
         {editUser ? 'Edit User Profile' : 'Create New User'}
       </FormTitle>
 
       <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
-        <Grid container spacing={1}>
+        <Grid container spacing={1.5}>
+          {/* Name Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Name</RequiredField>
             <StyledTextField
               fullWidth
-              size="small"
-              margin="none"
+              size="medium"
               {...register('name')}
               error={!!errors.name}
               helperText={errors.name?.message}
             />
           </Grid>
 
+          {/* Email Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Email</RequiredField>
             <StyledTextField
               fullWidth
-              size="small"
-              margin="none"
+              size="medium"
               type="email"
               {...register('email')}
               error={!!errors.email}
@@ -99,12 +64,12 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
+          {/* Password Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Password</RequiredField>
             <StyledTextField
               fullWidth
-              size="small"
-              margin="none"
+              size="medium"
               type="password"
               {...register('password')}
               error={!!errors.password}
@@ -112,6 +77,7 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
+          {/* Gender Field */}
           <Grid item xs={12}>
             <StyledFormControl component="fieldset" error={!!errors.gender}>
               <RequiredField component="legend" sx={{ mb: 0.5 }}>Gender</RequiredField>
@@ -131,12 +97,12 @@ export default function UserForm({ onSubmit, editUser }) {
             </StyledFormControl>
           </Grid>
 
+          {/* Age Field */}
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Age</RequiredField>
             <StyledTextField
               fullWidth
-              size="small"
-              margin="none"
+              size="medium"
               type="number"
               {...register('age')}
               error={!!errors.age}
@@ -145,14 +111,15 @@ export default function UserForm({ onSubmit, editUser }) {
             />
           </Grid>
 
+          {/* Submit Button */}
           <Grid item xs={12} sx={{ mt: 1 }}>
             <SubmitButton 
               type="submit" 
               variant="contained" 
               fullWidth
-              size="small"
+              size="medium"
             >
-              {editUser ? 'UPDATE' : 'CREATE USER'}
+              {editUser ? 'UPDATE USER' : 'CREATE USER'}
             </SubmitButton>
           </Grid>
         </Grid>
