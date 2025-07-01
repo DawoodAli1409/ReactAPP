@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, CssBaseline } from '@mui/material';
 import Alert from './Components/Alert/Alert.jsx';
 import UserForm from "./Components/UserForm/UserForm.jsx";
 import UserTable from "./Components/UserTable/UserTable.jsx";
@@ -29,29 +29,24 @@ function App() {
     setAlert({ open: true, severity: 'success', message: 'User deleted successfully!' });
   };
 
-  const handleCloseAlert = () => {
-    setAlert({ ...alert, open: false });
-  };
-
   return (
-    <Grid container spacing={2} sx={{ p: 2 }}>
-      <Grid item xs={12} md={6}>
-        <UserForm onSubmit={handleSubmit} editUser={editUser} />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <UserTable 
-          users={users} 
-          onEdit={setEditUser} 
-          onDelete={handleDelete} 
-        />
+    <>
+      <CssBaseline />
+      <Grid container spacing={3} sx={{ p: 3, maxWidth: 1400, margin: '0 auto' }}>
+        <Grid item xs={12} md={6}>
+          <UserForm onSubmit={handleSubmit} editUser={editUser} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <UserTable users={users} onEdit={setEditUser} onDelete={handleDelete} />
+        </Grid>
       </Grid>
       <Alert 
         open={alert.open}
         severity={alert.severity}
         message={alert.message}
-        onClose={handleCloseAlert}
+        onClose={() => setAlert({...alert, open: false})}
       />
-    </Grid>
+    </>
   );
 }
 
