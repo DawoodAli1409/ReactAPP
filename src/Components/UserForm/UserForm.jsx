@@ -77,8 +77,8 @@ export default function UserForm({ onSubmit, editUser }) {
       <Avatar sx={{
         bgcolor: 'primary.main',
         color: 'white',
-        width: 40,
-        height: 40,
+        width: 60,
+        height: 20,
         mb: 1,
         mx: 'auto'
       }}>
