@@ -7,9 +7,11 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
-  Typography
+  IconButton,
+  Typography,
+  Grid
 } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
 
 export default function UserTable({ users, onEdit, onDelete }) {
   const handleDelete = (id) => {
@@ -19,11 +21,11 @@ export default function UserTable({ users, onEdit, onDelete }) {
   };
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 4, boxShadow: 3 }}>
+    <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
       <Typography variant="h6" gutterBottom sx={{ p: 2, fontWeight: 600 }}>
         User Records
       </Typography>
-      <Table>
+      <Table size="small">
         <TableHead>
           <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
             <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
@@ -43,23 +45,21 @@ export default function UserTable({ users, onEdit, onDelete }) {
               <TableCell>{user.gender}</TableCell>
               <TableCell>{user.age}</TableCell>
               <TableCell>
-                <Button
-                  variant="outlined"
+                <IconButton
                   color="primary"
                   size="small"
                   onClick={() => onEdit(user)}
                   sx={{ mr: 1 }}
                 >
-                  Edit
-                </Button>
-                <Button
-                  variant="outlined"
+                  <Edit fontSize="small" />
+                </IconButton>
+                <IconButton
                   color="error"
                   size="small"
                   onClick={() => handleDelete(user.id)}
                 >
-                  Delete
-                </Button>
+                  <Delete fontSize="small" />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}

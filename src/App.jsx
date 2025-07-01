@@ -1,54 +1,58 @@
 import React, { useState } from 'react';
-import { Container } from '@mui/material';
-import UserForm from './Components/UserForm/UserForm';
-import UserTable from './Components/UserTable/UserTable';
+import { Grid } from '@mui/material';
+import UserForm from './components/UserForm';
+import UserTable from './components/UserTable';
+import Alert from './components/Alert';
 
-export default function App() {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'Dawood Ali Khan',
-      email: 'alidawood1409@gmail.com',
-      password: 'Password123', // Added password field
-      gender: 'Male',
-      age: 4
-    }
-  ]);
+function App() {
+  const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: 'success',
+    message: ''
+  });
 
-  const handleSubmit = (userData) => {
+  const handleSubmit = (data) => {
     if (editUser) {
-      // Update existing user
-      setUsers(users.map(user => 
-        user.id === editUser.id ? { ...userData, id: user.id } : user
-      ));
+      setUsers(users.map(user => user.id === editUser.id ? { ...data, id: user.id } : user));
+      setAlert({ open: true, severity: 'success', message: 'User updated successfully!' });
     } else {
-      // Add new user
-      const newUser = {
-        ...userData,
-        id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1
-      };
-      setUsers([...users, newUser]);
+      setUsers([...users, { ...data, id: users.length + 1 }]);
+      setAlert({ open: true, severity: 'success', message: 'User added successfully!' });
     }
-    setEditUser(null); // Reset edit mode after submission
+    setEditUser(null);
   };
 
   const handleDelete = (id) => {
     setUsers(users.filter(user => user.id !== id));
+    setAlert({ open: true, severity: 'success', message: 'User deleted successfully!' });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <UserForm 
-        onSubmit={handleSubmit} 
-        editUser={editUser} 
-        key={editUser ? editUser.id : 'create'} // Important for resetting form
+    <Grid container spacing={2} sx={{ p: 2 }}>
+      <Grid item xs={12} md={6}>
+        <UserForm onSubmit={handleSubmit} editUser={editUser} />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <UserTable 
+          users={users} 
+          onEdit={setEditUser} 
+          onDelete={handleDelete} 
+        />
+      </Grid>
+      <Alert 
+        open={alert.open}
+        severity={alert.severity}
+        message={alert.message}
+        onClose={handleCloseAlert}
       />
-      <UserTable 
-        users={users} 
-        onEdit={setEditUser} 
-        onDelete={handleDelete} 
-      />
-    </Container>
+    </Grid>
   );
 }
+
+export default App;

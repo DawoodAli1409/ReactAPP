@@ -5,20 +5,18 @@ import * as yup from 'yup';
 import {
   RadioGroup,
   Radio,
-  FormControlLabel
+  FormControlLabel,
+  Grid
 } from '@mui/material';
 import {
   FormContainer,
   FormTitle,
   StyledTextField,
   StyledFormControl,
-  StyledFormLabel,
   SubmitButton,
-  ErrorText,
   RequiredField
 } from './UserForm.styles';
 
-// Enhanced validation schema
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string()
@@ -71,92 +69,76 @@ export default function UserForm({ onSubmit, editUser }) {
     <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
       <FormTitle variant="h6">User Form</FormTitle>
 
-      <div className="form-field">
-        <RequiredField>Name*</RequiredField>
-        <StyledTextField
-          fullWidth
-          {...register('name')}
-          error={!!errors.name}
-          helperText={errors.name?.message}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'red'
-              }
-            }
-          }}
-        />
-      </div>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <RequiredField>Name*</RequiredField>
+          <StyledTextField
+            size="small"
+            fullWidth
+            {...register('name')}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+          />
+        </Grid>
 
-      <div className="form-field">
-        <RequiredField>Email*</RequiredField>
-        <StyledTextField
-          fullWidth
-          type="email"
-          {...register('email')}
-          error={!!errors.email}
-          helperText={errors.email?.message}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'red'
-              }
-            }
-          }}
-        />
-      </div>
+        <Grid item xs={12}>
+          <RequiredField>Email*</RequiredField>
+          <StyledTextField
+            size="small"
+            fullWidth
+            type="email"
+            {...register('email')}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+          />
+        </Grid>
 
-      <div className="form-field">
-        <RequiredField>Password*</RequiredField>
-        <StyledTextField
-          fullWidth
-          type="password"
-          {...register('password')}
-          error={!!errors.password}
-          helperText={errors.password?.message}
-        />
-      </div>
+        <Grid item xs={12}>
+          <RequiredField>Password*</RequiredField>
+          <StyledTextField
+            size="small"
+            fullWidth
+            type="password"
+            {...register('password')}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+          />
+        </Grid>
 
-      <StyledFormControl component="fieldset" error={!!errors.gender}>
-        <RequiredField>Gender*</RequiredField>
-        <RadioGroup row {...register('gender')}>
-          <FormControlLabel value="male" control={<Radio />} label="Male" />
-          <FormControlLabel value="female" control={<Radio />} label="Female" />
-        </RadioGroup>
-        {errors.gender && (
-          <ErrorText variant="caption">
-            {errors.gender.message}
-          </ErrorText>
-        )}
-      </StyledFormControl>
+        <Grid item xs={12}>
+          <StyledFormControl component="fieldset" error={!!errors.gender}>
+            <RequiredField>Gender*</RequiredField>
+            <RadioGroup row {...register('gender')}>
+              <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
+              <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
+            </RadioGroup>
+          </StyledFormControl>
+        </Grid>
 
-      <div className="form-field">
-        <RequiredField>Age*</RequiredField>
-        <StyledTextField
-          fullWidth
-          type="number"
-          {...register('age')}
-          error={!!errors.age}
-          helperText={errors.age?.message}
-          InputProps={{ inputProps: { min: 1, max: 120 } }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'red'
-              }
-            }
-          }}
-        />
-      </div>
+        <Grid item xs={12}>
+          <RequiredField>Age*</RequiredField>
+          <StyledTextField
+            size="small"
+            fullWidth
+            type="number"
+            {...register('age')}
+            error={!!errors.age}
+            helperText={errors.age?.message}
+            InputProps={{ inputProps: { min: 1, max: 120 } }}
+          />
+        </Grid>
 
-      <SubmitButton
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-      >
-        {editUser ? 'Update' : 'Submit'}
-      </SubmitButton>
+        <Grid item xs={12}>
+          <SubmitButton
+            type="submit"
+            variant="contained"
+            size="small"
+            fullWidth
+          >
+            {editUser ? 'Update' : 'Submit'}
+          </SubmitButton>
+        </Grid>
+      </Grid>
     </FormContainer>
   );
 }
