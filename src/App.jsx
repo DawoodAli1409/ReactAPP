@@ -31,7 +31,7 @@ function App() {
 
  
   return (
-    <div style={{ padding: '20px', maxWidth: '1500px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <UserForm onSubmit={handleSubmit} editUser={editUser} />
