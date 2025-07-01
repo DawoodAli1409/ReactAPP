@@ -64,9 +64,9 @@ export default function UserForm({ onSubmit, editUser }) {
 
   return (
     <Paper 
-      elevation={2} 
+      elevation={1} 
       sx={{ 
-        p: 1.5,             // Reduced padding
+        p: 1,             // Reduced padding
         borderRadius: 2, 
         maxWidth: 380,      // Optional: control width
         margin: 'auto', 
