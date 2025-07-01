@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Grid, CssBaseline } from '@mui/material';
-import Alert from './Components/Alert/Alert.jsx';
-import UserForm from "./Components/UserForm/UserForm.jsx";
-import UserTable from "./Components/UserTable/UserTable.jsx";
+import Alert from '@/Components/Alert/Alert';
+import UserForm from "@/Components/UserForm/UserForm";
+import UserTable from "@/Components/UserTable/UserTable";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -32,12 +32,21 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <Grid container spacing={3} sx={{ p: 3, maxWidth: 1400, margin: '0 auto' }}>
+      <Grid container spacing={3} sx={{ 
+        p: 3, 
+        maxWidth: 1400, 
+        margin: '0 auto',
+        minHeight: '100vh'
+      }}>
         <Grid item xs={12} md={6}>
           <UserForm onSubmit={handleSubmit} editUser={editUser} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <UserTable users={users} onEdit={setEditUser} onDelete={handleDelete} />
+          <UserTable 
+            users={users} 
+            onEdit={setEditUser} 
+            onDelete={handleDelete} 
+          />
         </Grid>
       </Grid>
       <Alert 

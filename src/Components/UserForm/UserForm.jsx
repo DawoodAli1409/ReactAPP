@@ -7,13 +7,13 @@ import {
   Radio,
   FormControlLabel,
   Grid,
-  Typography,
   Avatar,
   Paper
 } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   FormContainer,
+  FormTitle,
   StyledTextField,
   StyledFormControl,
   SubmitButton,
@@ -21,11 +21,36 @@ import {
 } from './UserForm.styles';
 
 const schema = yup.object().shape({
-  // ... (keep your existing validation schema)
+  name: yup.string().required('Name is required'),
+  email: yup.string()
+    .required('Email is required')
+    .matches(
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      'Invalid email address'
+    ),
+  password: yup.string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(
+      /[A-Z]/,
+      'Password must contain at least one uppercase letter'
+    ),
+  gender: yup.string().required('Gender is required'),
+  age: yup.number()
+    .typeError('Age must be a number')
+    .positive('Age must be positive')
+    .integer('Age must be an integer')
+    .required('Age is required')
+    .max(120, 'Age must be less than 120')
 });
 
 export default function UserForm({ onSubmit, editUser }) {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors }, 
+    reset 
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues: editUser || {
       name: '',
@@ -35,6 +60,13 @@ export default function UserForm({ onSubmit, editUser }) {
       age: ''
     }
   });
+
+  const handleFormSubmit = (data) => {
+    onSubmit(data);
+    if (!editUser) {
+      reset();
+    }
+  };
 
   return (
     <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
@@ -48,15 +80,81 @@ export default function UserForm({ onSubmit, editUser }) {
       }}>
         <PeopleIcon fontSize="large" />
       </Avatar>
-      <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 600 }}>
+      <FormTitle variant="h5">
         {editUser ? 'Edit User Profile' : 'Create New User'}
-      </Typography>
+      </FormTitle>
       
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
         <Grid container spacing={2}>
-          {/* Form fields (keep your existing fields) */}
+          <Grid item xs={12}>
+            <RequiredField>Name</RequiredField>
+            <StyledTextField
+              fullWidth
+              size="small"
+              {...register('name')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <RequiredField>Email</RequiredField>
+            <StyledTextField
+              fullWidth
+              size="small"
+              type="email"
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <RequiredField>Password</RequiredField>
+            <StyledTextField
+              fullWidth
+              size="small"
+              type="password"
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <StyledFormControl component="fieldset" error={!!errors.gender}>
+              <RequiredField component="legend">Gender</RequiredField>
+              <RadioGroup row {...register('gender')}>
+                <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
+                <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
+              </RadioGroup>
+            </StyledFormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <RequiredField>Age</RequiredField>
+            <StyledTextField
+              fullWidth
+              size="small"
+              type="number"
+              {...register('age')}
+              error={!!errors.age}
+              helperText={errors.age?.message}
+              InputProps={{ inputProps: { min: 1, max: 120 } }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <SubmitButton
+              type="submit"
+              variant="contained"
+              fullWidth
+            >
+              {editUser ? 'Update Profile' : 'Create User'}
+            </SubmitButton>
+          </Grid>
         </Grid>
-      </form>
+      </FormContainer>
     </Paper>
   );
 }

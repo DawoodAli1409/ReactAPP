@@ -8,9 +8,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function CustomAlert({ open, severity, message, onClose }) {
   return (
-    <Snackbar 
-      open={open} 
-      autoHideDuration={6000} 
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
       onClose={onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
     >
