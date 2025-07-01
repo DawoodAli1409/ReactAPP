@@ -1,4 +1,3 @@
-// UserForm.jsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -25,10 +24,7 @@ const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string()
     .required('Email is required')
-    .matches(
-      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      'Invalid email address'
-    ),
+    .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 'Invalid email address'),
   password: yup.string()
     .required('Password is required')
     .min(8, 'Password must be at least 8 characters')
@@ -67,16 +63,26 @@ export default function UserForm({ onSubmit, editUser }) {
   };
 
   return (
-    <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
+    <Paper 
+      elevation={2} 
+      sx={{ 
+        p: 1.5,             // Reduced padding
+        borderRadius: 2, 
+        maxWidth: 380,      // Optional: control width
+        margin: 'auto', 
+        mt: 1,              // Reduced top margin
+        mb: 1               // Reduced bottom margin
+      }}
+    >
       <Avatar sx={{
         bgcolor: 'primary.main',
         color: 'white',
-        width: 44,
-        height: 44,
-        mb: 1.5,
+        width: 40,
+        height: 40,
+        mb: 1,
         mx: 'auto'
       }}>
-        <PeopleIcon fontSize="medium" />
+        <PeopleIcon fontSize="small" />
       </Avatar>
 
       <FormTitle variant="h6">
