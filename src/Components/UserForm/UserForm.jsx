@@ -21,21 +21,34 @@ import {
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-  gender: yup.string().required('Gender is required'),
-  age: yup.number().min(1, 'Age must be at least 1').max(120, 'Age must be less than 120').required('Age is required'),
+  email: yup.string().email('Invalid email format').required('Email is required'),
+  password: yup.string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+  gender: yup.string().required('Please select a gender'),
+  age: yup.number()
+    .typeError('Age must be a number')
+    .integer('Age must be a whole number')
+    .positive('Age must be positive')
+    .min(1, 'Age must be at least 1')
+    .max(120, 'Age cannot exceed 120')
+    .required('Age is required'),
 });
 
 export default function UserForm({ onSubmit, editUser }) {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors, isSubmitting }, 
+    reset 
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues: editUser || {
       name: '',
       email: '',
       password: '',
       gender: '',
-      age: ''
+      age: undefined // Changed from empty string to undefined for number field
     }
   });
 
@@ -45,10 +58,14 @@ export default function UserForm({ onSubmit, editUser }) {
     }
   }, [editUser, reset]);
 
-  const handleFormSubmit = (data) => {
-    onSubmit(data);
-    if (!editUser) {
-      reset();
+  const handleFormSubmit = async (data) => {
+    try {
+      await onSubmit(data);
+      if (!editUser) {
+        reset();
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
     }
   };
 
@@ -64,7 +81,7 @@ export default function UserForm({ onSubmit, editUser }) {
         {editUser ? 'Edit User Profile' : 'Create New User'}
       </FormTitle>
 
-      <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)}>
+      <FormContainer component="form" onSubmit={handleSubmit(handleFormSubmit)} noValidate>
         <Grid container spacing={1.5}>
           <Grid item xs={12}>
             <RequiredField sx={{ mb: 0.5 }}>Name</RequiredField>
@@ -74,6 +91,7 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('name')}
               error={!!errors.name}
               helperText={errors.name?.message}
+              disabled={isSubmitting}
             />
           </Grid>
 
@@ -86,6 +104,10 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
+              disabled={isSubmitting}
+              inputProps={{
+                autoComplete: 'new-email'
+              }}
             />
           </Grid>
 
@@ -98,11 +120,15 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
+              disabled={isSubmitting}
+              inputProps={{
+                autoComplete: editUser ? 'new-password' : 'current-password'
+              }}
             />
           </Grid>
 
           <Grid item xs={12}>
-            <FormControl component="fieldset" error={!!errors.gender}>
+            <FormControl component="fieldset" error={!!errors.gender} disabled={isSubmitting}>
               <RequiredField component="legend" sx={{ mb: 0.5 }}>Gender</RequiredField>
               <RadioGroup row {...register('gender')}>
                 <FormControlLabel 
@@ -124,34 +150,25 @@ export default function UserForm({ onSubmit, editUser }) {
           </Grid>
 
           <Grid item xs={12}>
-  <RequiredField sx={{ mb: 0.5 }}>Age</RequiredField>
-  <StyledTextField
-    fullWidth
-    size="medium"
-    type="number"
-    {...register('age', {
-      valueAsNumber: true,
-      required: "Age is required",
-      min: {
-        value: 1,
-        message: "Age must be at least 1"
-      },
-      max: {
-        value: 120,
-        message: "Age must be at most 120"
-      },
-      validate: (value) => !isNaN(value) || "Please enter a valid number"
-    })}
-    error={!!errors.age}
-    helperText={errors.age?.message}
-    InputProps={{ 
-      inputProps: { 
-        min: 1, 
-        max: 120,
-      } 
-    }}
-  />
-</Grid>
+            <RequiredField sx={{ mb: 0.5 }}>Age</RequiredField>
+            <StyledTextField
+              fullWidth
+              size="medium"
+              type="number"
+              {...register('age')}
+              error={!!errors.age}
+              helperText={errors.age?.message}
+              disabled={isSubmitting}
+              InputProps={{ 
+                inputProps: { 
+                  min: 1, 
+                  max: 120,
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*'
+                } 
+              }}
+            />
+          </Grid>
 
           <Grid item xs={12} sx={{ mt: 1 }}>
             <SubmitButton 
@@ -159,8 +176,9 @@ export default function UserForm({ onSubmit, editUser }) {
               variant="contained" 
               fullWidth
               size="medium"
+              disabled={isSubmitting}
             >
-              {editUser ? 'UPDATE USER' : 'CREATE USER'}
+              {isSubmitting ? 'Processing...' : (editUser ? 'UPDATE USER' : 'CREATE USER')}
             </SubmitButton>
           </Grid>
         </Grid>
