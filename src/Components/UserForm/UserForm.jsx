@@ -124,17 +124,34 @@ export default function UserForm({ onSubmit, editUser }) {
           </Grid>
 
           <Grid item xs={12}>
-            <RequiredField sx={{ mb: 0.5 }}>Age</RequiredField>
-            <StyledTextField
-              fullWidth
-              size="medium"
-              type="number"
-              {...register('age')}
-              error={!!errors.age}
-              helperText={errors.age?.message}
-              InputProps={{ inputProps: { min: 1, max: 120 } }}
-            />
-          </Grid>
+  <RequiredField sx={{ mb: 0.5 }}>Age</RequiredField>
+  <StyledTextField
+    fullWidth
+    size="medium"
+    type="number"
+    {...register('age', {
+      valueAsNumber: true,
+      required: "Age is required",
+      min: {
+        value: 1,
+        message: "Age must be at least 1"
+      },
+      max: {
+        value: 120,
+        message: "Age must be at most 120"
+      },
+      validate: (value) => !isNaN(value) || "Please enter a valid number"
+    })}
+    error={!!errors.age}
+    helperText={errors.age?.message}
+    InputProps={{ 
+      inputProps: { 
+        min: 1, 
+        max: 120,
+      } 
+    }}
+  />
+</Grid>
 
           <Grid item xs={12} sx={{ mt: 1 }}>
             <SubmitButton 
