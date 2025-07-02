@@ -17,9 +17,6 @@ function App() {
     message: ''
   });
   const navigate = useNavigate();
-   useEffect(() => {
-    navigate('/dashboard'); 
-  }, [navigate]);
 
   const showAlert = (severity, message, redirectTo) => {
     setAlert({
@@ -65,7 +62,7 @@ function App() {
           }
         }
       }}>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/">Dashboard</Link>
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>
       </Box>
@@ -79,15 +76,19 @@ function App() {
       />
 
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-  <Route path="/dashboard" element={
-    <Dashboard 
-      users={users}
-      onEdit={setEditUser}
-      onDelete={handleDelete}
-      onSubmit={handleSubmit}
-      editUser={editUser}
-    />
+         <Route path="/" element={
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={5}>
+        <UserForm onSubmit={handleSubmit} editUser={editUser} />
+      </Grid>
+      <Grid item xs={12} md={7}>
+        <UserTable 
+          users={users} 
+          onEdit={setEditUser} 
+          onDelete={handleDelete} 
+        />
+      </Grid>
+    </Grid>
   } />
         <Route path="/login" element={<Login showAlert={showAlert} />} />
         <Route path="/register" element={<Register showAlert={showAlert} />} />
