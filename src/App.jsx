@@ -18,7 +18,7 @@ function App() {
   });
   const navigate = useNavigate();
    useEffect(() => {
-    navigate('/'); 
+    navigate('/dashboard'); 
   }, [navigate]);
 
   const showAlert = (severity, message, redirectTo) => {
