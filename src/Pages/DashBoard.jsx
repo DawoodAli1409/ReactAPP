@@ -1,4 +1,8 @@
-// src/Pages/Dashboard.jsx
+import React from 'react';
+import { Grid } from '@mui/material';
+import UserForm from '../Components/UserForm/UserForm';
+import UserTable from '../Components/UserTable/UserTable';
+
 export default function Dashboard({ users, onEdit, onDelete, onSubmit, editUser }) {
   return (
     <Grid container spacing={3}>
