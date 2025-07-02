@@ -6,7 +6,6 @@ import UserForm from "@/Components/UserForm/UserForm";
 import UserTable from "@/Components/UserTable/UserTable";
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import Dashboard from './Pages/DashBoard';
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -47,7 +46,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
-      {}
+      {/* Navigation Links - Added Here */}
       <Box sx={{ 
         display: 'flex',
         justifyContent: 'flex-end',
@@ -76,20 +75,20 @@ function App() {
       />
 
       <Routes>
-         <Route path="/" element={
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={5}>
-        <UserForm onSubmit={handleSubmit} editUser={editUser} />
-      </Grid>
-      <Grid item xs={12} md={7}>
-        <UserTable 
-          users={users} 
-          onEdit={setEditUser} 
-          onDelete={handleDelete} 
-        />
-      </Grid>
-    </Grid>
-  } />
+        <Route path="/" element={
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={5}>
+              <UserForm onSubmit={handleSubmit} editUser={editUser} />
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <UserTable 
+                users={users} 
+                onEdit={setEditUser} 
+                onDelete={handleDelete} 
+              />
+            </Grid>
+          </Grid>
+        } />
         <Route path="/login" element={<Login showAlert={showAlert} />} />
         <Route path="/register" element={<Register showAlert={showAlert} />} />
       </Routes>
