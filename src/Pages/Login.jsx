@@ -92,14 +92,8 @@ export default function Login({ showAlert }) {
                 </InputAdornment>
               ),
             }}
-            sx={{ mb: 1 }}
+            sx={{ mb: 3 }}
           />
-          
-          <Box sx={{ textAlign: 'right', mb: 3 }}>
-            <Link to="/ReactAPP/forgot-password" className="auth-link" style={{ fontSize: '0.9rem' }}>
-              Forgot password?
-            </Link>
-          </Box>
           
           <Button
             fullWidth
@@ -121,7 +115,7 @@ export default function Login({ showAlert }) {
           
           <Typography className="auth-footer">
             Don't have an account?
-            <Link to="/ReactAPP/register" className="auth-link">
+            <Link to="http://localhost:5173/ReactAPP/register" className="auth-link">
               Create one
             </Link>
           </Typography>

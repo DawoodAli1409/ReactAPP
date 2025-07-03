@@ -18,7 +18,7 @@ function App() {
     message: ''
   });
   const navigate = useNavigate();
-  const location = useLocation();
+ 
 
   // Handle initial load for both with and without trailing slash
   useEffect(() => {

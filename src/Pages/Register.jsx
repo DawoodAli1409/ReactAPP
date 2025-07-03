@@ -173,7 +173,7 @@ export default function Register({ showAlert }) {
           
           <Typography className="auth-footer">
             Already have an account?
-            <Link to="/ReactAPP/login" className="auth-link">
+            <Link to="http://localhost:5173/ReactAPP/login" className="auth-link">
               Sign in
             </Link>
           </Typography>
