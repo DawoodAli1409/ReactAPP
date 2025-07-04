@@ -1,104 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Box } from '@mui/material';
-import Alert from '@/Components/Alert/Alert';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';  // Fixed import path
 import Dashboard from './Pages/DashBoard';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import CustomAlert from './Components/Alert/Alert';
+import { Container } from '@mui/material';
+import NavigationBar from './Components/NavigationBar';  // Ensure correct path
 
 function App() {
-  const [users, setUsers] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com', gender: 'male', age: 30 },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', gender: 'female', age: 25 }
-  ]);
-  const [editUser, setEditUser] = useState(null);
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: 'success',
-    message: ''
+  const [alert, setAlert] = React.useState({ 
+    open: false, 
+    severity: 'info', 
+    message: '' 
   });
-  const navigate = useNavigate();
- 
 
-  // Handle initial load for both with and without trailing slash
-  useEffect(() => {
-    if (location.pathname === '/' || location.pathname === '') {
-      navigate('/', { replace: true });
-    }
-  }, [navigate, location]);
-
-  const showAlert = (severity, message, redirectTo) => {
-    setAlert({
-      open: true,
-      severity,
-      message
-    });
-    if (redirectTo) {
-      setTimeout(() => navigate(redirectTo), 2000);
-    }
-  };
-
-  const handleSubmit = (data) => {
-    if (editUser) {
-      setUsers(users.map(user => user.id === editUser.id ? { ...data, id: user.id } : user));
-      showAlert('success', 'User updated successfully!');
-    } else {
-      setUsers([...users, { ...data, id: users.length + 1 }]);
-      showAlert('success', 'User added successfully!');
-    }
-    setEditUser(null);
-  };
-
-  const handleDelete = (id) => {
-    setUsers(users.filter(user => user.id !== id));
-    showAlert('success', 'User deleted successfully!');
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
-      {/* Navigation Links */}
-      <Box sx={{ 
-        display: 'flex',
-        justifyContent: 'flex-end',
-        gap: 2,
-        mb: 3,
-        '& a': {
-          textDecoration: 'none',
-          color: 'primary.main',
-          fontWeight: 'medium',
-          '&:hover': {
-            textDecoration: 'underline'
-          }
-        }
-      }}>
-        <Link to="/">Dashboard</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/register">Register</Link>
-      </Box>
-
-      {/* Global Alert */}
-      <Alert 
-        open={alert.open}
-        severity={alert.severity}
-        message={alert.message}
-        onClose={() => setAlert({...alert, open: false})}
-      />
-
-      <Routes>
-        <Route path="/" element={
-          <Dashboard
-            users={users}
-            onEdit={setEditUser}
-            onDelete={handleDelete}
-            onSubmit={handleSubmit}
-            editUser={editUser}
-          />
-        } />
-        <Route path="/login" element={<Login showAlert={showAlert} />} />
-        <Route path="/register" element={<Register showAlert={showAlert} />} />
-      </Routes>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <CustomAlert 
+          open={alert.open} 
+          severity={alert.severity} 
+          message={alert.message}
+          onClose={() => setAlert({ ...alert, open: false })}
+        />
+        <NavigationBar />
+        <Container sx={{ mt: 4 }}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/ReactAPP/" element={<Dashboard showAlert={showAlert} />} />
+            <Route path="/ReactAPP/login" element={<Login showAlert={showAlert} />} />
+            <Route path="/ReactAPP/register" element={<Register showAlert={showAlert} />} />
+            
+            {/* Protected Routes (Example) */}
+          
+          </Routes>
+        </Container>
+      </BrowserRouter>
+    </AuthProvider>
   );
+}
+
+// ProtectedRoute component (define if needed)
+function ProtectedRoute({ children }) {
+  const { currentUser } = useAuth();  // Ensure useAuth is imported from correct path
+  return currentUser ? children : <Navigate to="/ReactAPP/login" />;
 }
 
 export default App;

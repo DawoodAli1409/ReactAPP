@@ -2,10 +2,12 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+// Create the Alert component using forwardRef
+const AlertComponent = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+// Main Alert wrapper component
 export default function CustomAlert({ open, severity, message, onClose }) {
   return (
     <Snackbar
@@ -14,9 +16,13 @@ export default function CustomAlert({ open, severity, message, onClose }) {
       onClose={onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
     >
-      <Alert onClose={onClose} severity={severity} sx={{ width: '100%' }}>
+      <AlertComponent 
+        onClose={onClose} 
+        severity={severity} 
+        sx={{ width: '100%' }}
+      >
         {message}
-      </Alert>
+      </AlertComponent>
     </Snackbar>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   TextField, 
   Button, 
@@ -13,13 +13,15 @@ import {
 } from '@mui/material';
 import { 
   Person as PersonIcon,
-  Email as EmailIcon,
-  Lock as LockIcon,
+  Email as EmailIcon, 
+  Lock as LockIcon, 
   Visibility,
   VisibilityOff
 } from '@mui/icons-material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const schema = yup.object().shape({
   name: yup.string().required('Full name is required'),
@@ -36,26 +38,60 @@ const schema = yup.object().shape({
 });
 
 export default function Register({ showAlert }) {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors },
+    watch
+  } = useForm({
     resolver: yupResolver(schema)
   });
+  
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log('Registration data:', data);
-    showAlert('success', 'Registration successful!', '/ReactAPP/login');
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      showAlert('success', 'Registration successful!');
+      navigate('/ReactAPP/'); // Redirect to dashboard after successful registration
+    } catch (error) {
+      let errorMessage = 'Registration failed. Please try again.';
+      switch(error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'Email already in use.';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'Password should be at least 6 characters.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address.';
+          break;
+      }
+      showAlert('error', errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <Box className="auth-container">
-      <Paper className="auth-card" elevation={3}>
-        <Typography variant="h3" className="auth-title">
+    <Box sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '80vh',
+      p: 2
+    }}>
+      <Paper elevation={3} sx={{
+        p: 4,
+        width: '100%',
+        maxWidth: 500
+      }}>
+        <Typography variant="h4" align="center" gutterBottom sx={{ mb: 3 }}>
           Create Account
-        </Typography>
-        
-        <Typography variant="body1" color="textSecondary" align="center" sx={{ mb: 3 }}>
-          Join us today and get started
         </Typography>
         
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -63,7 +99,7 @@ export default function Register({ showAlert }) {
             fullWidth
             label="Full Name"
             variant="outlined"
-            className="auth-field"
+            margin="normal"
             {...register('name')}
             error={!!errors.name}
             helperText={errors.name?.message}
@@ -74,14 +110,13 @@ export default function Register({ showAlert }) {
                 </InputAdornment>
               ),
             }}
-            sx={{ mb: 3 }}
           />
           
           <TextField
             fullWidth
             label="Email Address"
             variant="outlined"
-            className="auth-field"
+            margin="normal"
             {...register('email')}
             error={!!errors.email}
             helperText={errors.email?.message}
@@ -92,7 +127,6 @@ export default function Register({ showAlert }) {
                 </InputAdornment>
               ),
             }}
-            sx={{ mb: 3 }}
           />
           
           <TextField
@@ -100,7 +134,7 @@ export default function Register({ showAlert }) {
             label="Password"
             type={showPassword ? 'text' : 'password'}
             variant="outlined"
-            className="auth-field"
+            margin="normal"
             {...register('password')}
             error={!!errors.password}
             helperText={errors.password?.message}
@@ -121,7 +155,6 @@ export default function Register({ showAlert }) {
                 </InputAdornment>
               ),
             }}
-            sx={{ mb: 3 }}
           />
           
           <TextField
@@ -129,7 +162,7 @@ export default function Register({ showAlert }) {
             label="Confirm Password"
             type={showConfirmPassword ? 'text' : 'password'}
             variant="outlined"
-            className="auth-field"
+            margin="normal"
             {...register('confirmPassword')}
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message}
@@ -150,7 +183,6 @@ export default function Register({ showAlert }) {
                 </InputAdornment>
               ),
             }}
-            sx={{ mb: 3 }}
           />
           
           <Button
@@ -158,23 +190,32 @@ export default function Register({ showAlert }) {
             type="submit"
             variant="contained"
             size="large"
-            className="auth-button"
+            disabled={isSubmitting}
             sx={{
+              mt: 3,
+              mb: 2,
               backgroundColor: '#1a237e',
               '&:hover': {
                 backgroundColor: '#303f9f'
               }
             }}
           >
-            Create Account
+            {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </Button>
           
-          <Divider className="auth-divider">OR</Divider>
+          <Divider sx={{ my: 2 }}>OR</Divider>
           
-          <Typography className="auth-footer">
-            Already have an account?
-            <Link to="http://localhost:5173/ReactAPP/login" className="auth-link">
-              Sign in
+          <Typography align="center" sx={{ mt: 2 }}>
+            Already have an account?{' '}
+            <Link 
+              to="/ReactAPP/login" 
+              style={{ 
+                textDecoration: 'none',
+                color: '#1a237e',
+                fontWeight: 'bold'
+              }}
+            >
+              Login here
             </Link>
           </Typography>
         </form>
