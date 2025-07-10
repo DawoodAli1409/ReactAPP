@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AppBar, Toolbar, Button } from '@mui/material';
 import { useAuth } from '@/context/AuthContext'  // Remove .jsx extension

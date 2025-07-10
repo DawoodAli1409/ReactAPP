@@ -1,12 +1,14 @@
+// App.jsx
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';  // Fixed import path
+import { AuthProvider } from './context/AuthContext';
 import Dashboard from './Pages/DashBoard';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import CustomAlert from './Components/Alert/Alert';
 import { Container } from '@mui/material';
-import NavigationBar from './Components/NavigationBar';  // Ensure correct path
+import NavigationBar from './Components/NavigationBar';
+import { useAuth } from './context/AuthContext';
 
 function App() {
   const [alert, setAlert] = React.useState({ 
@@ -21,7 +23,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <CustomAlert 
           open={alert.open} 
           severity={alert.severity} 
@@ -35,9 +37,6 @@ function App() {
             <Route path="/ReactAPP/" element={<Dashboard showAlert={showAlert} />} />
             <Route path="/ReactAPP/login" element={<Login showAlert={showAlert} />} />
             <Route path="/ReactAPP/register" element={<Register showAlert={showAlert} />} />
-            
-            {/* Protected Routes (Example) */}
-          
           </Routes>
         </Container>
       </BrowserRouter>
@@ -45,9 +44,8 @@ function App() {
   );
 }
 
-// ProtectedRoute component (define if needed)
 function ProtectedRoute({ children }) {
-  const { currentUser } = useAuth();  // Ensure useAuth is imported from correct path
+  const { currentUser } = useAuth();
   return currentUser ? children : <Navigate to="/ReactAPP/login" />;
 }
 

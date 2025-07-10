@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -18,6 +18,8 @@ import {
   SubmitButton,
   RequiredField
 } from './UserForm.styles';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '/src/firebase';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -33,14 +35,26 @@ const schema = yup.object().shape({
     .min(1, 'Age must be at least 1')
     .max(120, 'Age cannot exceed 120')
     .required('Age is required'),
+  image: yup
+    .mixed()
+    .test('fileSize', 'File size is too large', value => {
+      if (!value.length) return true; // attachment is optional
+      return value[0].size <= 2000000; // 2MB
+    })
+    .test('fileType', 'Unsupported File Format', value => {
+      if (!value.length) return true;
+      return ['image/jpeg', 'image/png', 'image/jpg'].includes(value[0].type);
+    }),
 });
 
 export default function UserForm({ onSubmit, editUser }) {
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors, isSubmitting }, 
-    reset 
+  const [uploading, setUploading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: editUser || {
@@ -48,7 +62,8 @@ export default function UserForm({ onSubmit, editUser }) {
       email: '',
       password: '',
       gender: '',
-      age: undefined // Changed from empty string to undefined for number field
+      age: undefined,
+      image: null,
     }
   });
 
@@ -58,19 +73,49 @@ export default function UserForm({ onSubmit, editUser }) {
     }
   }, [editUser, reset]);
 
+  const watchImage = watch('image');
+
   const handleFormSubmit = async (data) => {
     try {
-      await onSubmit(data);
-      if (!editUser) {
-        reset();
+      setUploading(true);
+      let imageUrl = editUser?.imageUrl || null;
+
+      if (data.image && data.image.length > 0) {
+        const file = data.image[0];
+        const storageRef = ref(storage, `user_images/${file.name}_${Date.now()}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        await new Promise((resolve, reject) => {
+          uploadTask.on('state_changed',
+            null,
+            (error) => {
+              reject(error);
+            },
+            async () => {
+              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve();
+            }
+          );
+        });
       }
+
+      const userData = {
+        ...data,
+        imageUrl,
+      };
+      delete userData.image; // remove image file from data before sending
+
+      await onSubmit(userData);
+      if (!editUser) reset();
     } catch (error) {
       console.error('Form submission error:', error);
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
-    <Paper elevation={3} sx={{ 
+    <Paper elevation={3} sx={{
       p: 2,
       borderRadius: 2,
       width: '100%',
@@ -91,7 +136,6 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('name')}
               error={!!errors.name}
               helperText={errors.name?.message}
-              disabled={isSubmitting}
             />
           </Grid>
 
@@ -104,9 +148,8 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
-              disabled={isSubmitting}
               inputProps={{
-                autoComplete: 'new-email'
+                autoComplete: 'off'
               }}
             />
           </Grid>
@@ -120,27 +163,26 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
-              disabled={isSubmitting}
               inputProps={{
-                autoComplete: editUser ? 'new-password' : 'current-password'
+                autoComplete: 'off'
               }}
             />
           </Grid>
 
           <Grid item xs={12}>
-            <FormControl component="fieldset" error={!!errors.gender} disabled={isSubmitting}>
+            <FormControl component="fieldset" error={!!errors.gender}>
               <RequiredField component="legend" sx={{ mb: 0.5 }}>Gender</RequiredField>
               <RadioGroup row {...register('gender')}>
-                <FormControlLabel 
-                  value="male" 
-                  control={<Radio size="small" />} 
-                  label="Male" 
+                <FormControlLabel
+                  value="male"
+                  control={<Radio size="small" />}
+                  label="Male"
                   sx={{ mr: 2 }}
                 />
-                <FormControlLabel 
-                  value="female" 
-                  control={<Radio size="small" />} 
-                  label="Female" 
+                <FormControlLabel
+                  value="female"
+                  control={<Radio size="small" />}
+                  label="Female"
                 />
               </RadioGroup>
               {errors.gender && (
@@ -158,27 +200,36 @@ export default function UserForm({ onSubmit, editUser }) {
               {...register('age')}
               error={!!errors.age}
               helperText={errors.age?.message}
-              disabled={isSubmitting}
-              InputProps={{ 
-                inputProps: { 
-                  min: 1, 
+              InputProps={{
+                inputProps: {
+                  min: 1,
                   max: 120,
                   inputMode: 'numeric',
                   pattern: '[0-9]*'
-                } 
+                }
               }}
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <RequiredField sx={{ mb: 0.5 }}>Profile Image</RequiredField>
+            <input
+              type="file"
+              accept="image/*"
+              {...register('image')}
+            />
+            {errors.image && <FormHelperText error>{errors.image.message}</FormHelperText>}
+          </Grid>
+
           <Grid item xs={12} sx={{ mt: 1 }}>
-            <SubmitButton 
-              type="submit" 
-              variant="contained" 
+            <SubmitButton
+              type="submit"
+              variant="contained"
               fullWidth
               size="medium"
-              disabled={isSubmitting}
+              disabled={uploading}
             >
-              {isSubmitting ? 'Processing...' : (editUser ? 'UPDATE USER' : 'CREATE USER')}
+              {uploading ? 'Uploading...' : (editUser ? 'UPDATE USER' : 'CREATE USER')}
             </SubmitButton>
           </Grid>
         </Grid>

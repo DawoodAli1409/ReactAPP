@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase'; // ✅ ensure this path is correct
 
 const AuthContext = createContext();
 
@@ -13,7 +13,8 @@ export function AuthProvider({ children }) {
       setCurrentUser(user);
       setLoading(false);
     });
-    return unsubscribe;
+
+    return unsubscribe; // cleanup listener
   }, []);
 
   return (
