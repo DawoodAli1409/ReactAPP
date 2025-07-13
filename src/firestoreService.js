@@ -1,39 +1,23 @@
-// src/firestoreService.js
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase";
+import { getUserdata, addUserdata, updateUserdata, deleteUserdata } from './firebaseDawood';
 
 // Add user
 export const addUser = async (userData) => {
-  const docRef = await addDoc(collection(db, "users"), {
-    ...userData,
-    imageUrl: userData.imageUrl || null,
-    createdAt: serverTimestamp()
-  });
-  return { id: docRef.id, ...userData };
+  return await addUserdata(userData);
 };
 
 // Update user
 export const updateUser = async (id, userData) => {
-  await updateDoc(doc(db, "users", id), {
-    ...userData,
-    imageUrl: userData.imageUrl || null,
-    updatedAt: serverTimestamp()
-  });
+  return await updateUserdata(id, userData);
 };
 
 // Delete user
 export const deleteUser = async (id) => {
-  await deleteDoc(doc(db, "users", id));
+  return await deleteUserdata(id);
 };
 
-// Listen to users in real time
+// Listen to users in real time - Not supported with REST API, so fallback to polling or manual refresh needed
 export const subscribeToUsers = (callback, errorCallback) => {
-  return onSnapshot(
-    collection(db, "users"),
-    (snapshot) => {
-      const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      callback(users);
-    },
-    errorCallback
-  );
+  console.warn('Real-time subscription not supported with REST API. Please implement polling or manual refresh.');
+  // Optionally implement polling here if needed
+  return () => {};
 };

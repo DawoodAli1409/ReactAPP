@@ -38,7 +38,7 @@ const schema = yup.object().shape({
   image: yup
     .mixed()
     .test('fileSize', 'File size is too large', value => {
-      if (!value.length) return true; // attachment is optional
+      if (!value.length) return true;
       return value[0].size <= 2000000; // 2MB
     })
     .test('fileType', 'Unsupported File Format', value => {
@@ -76,41 +76,21 @@ export default function UserForm({ onSubmit, editUser }) {
   const watchImage = watch('image');
 
   const handleFormSubmit = async (data) => {
+    console.log('Form submission started');
+    setUploading(true);
     try {
-      setUploading(true);
-      let imageUrl = editUser?.imageUrl || null;
-
-      if (data.image && data.image.length > 0) {
-        const file = data.image[0];
-        const storageRef = ref(storage, `user_images/${file.name}_${Date.now()}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed',
-            null,
-            (error) => {
-              reject(error);
-            },
-            async () => {
-              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve();
-            }
-          );
-        });
-      }
-
       const userData = {
         ...data,
-        imageUrl,
+        imageFile: data.image && data.image.length > 0 ? data.image[0] : null,
       };
-      delete userData.image; // remove image file from data before sending
+      delete userData.image;
 
-      await onSubmit(userData);
-      if (!editUser) reset();
+      await onSubmit(userData); // Wait for onSubmit to complete
+      reset(); // Reset form only on success
     } catch (error) {
       console.error('Form submission error:', error);
     } finally {
-      setUploading(false);
+      setUploading(false); // Always reset uploading state
     }
   };
 

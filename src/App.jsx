@@ -1,4 +1,3 @@
-// App.jsx
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -33,8 +32,14 @@ function App() {
         <NavigationBar />
         <Container sx={{ mt: 4 }}>
           <Routes>
-            {/* Public Routes */}
-            <Route path="/ReactAPP/" element={<Dashboard showAlert={showAlert} />} />
+            <Route
+              path="/ReactAPP/"
+              element={
+                <ProtectedRoute>
+                  <Dashboard showAlert={showAlert} />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/ReactAPP/login" element={<Login showAlert={showAlert} />} />
             <Route path="/ReactAPP/register" element={<Register showAlert={showAlert} />} />
           </Routes>
